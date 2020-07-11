@@ -2,16 +2,26 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hzc.community.mapper.userMapper">
-    <resultMap id="userMap" type="user">
+<mapper namespace="com.hzc.community.mapper.UserMapper">
+    <resultMap id="userMap" type="UserModel">
         <id column="id" property="id"/>
         <result column="account_id" property="accountId"/>
         <result column="name" property="name"/>
         <result column="token" property="token"/>
         <result column="gmt_create" property="gmtCreate"/>
         <result column="gmt_modify" property="gmtModify"/>
+        <result column="avatar_url" property="avatarUrl"/>
     </resultMap>
-    <insert id="insert" parameterType="user">
-        insert into user(account_id,name,token,gmt_create,gmt_modify) values(#{accountId,name,token,gmtCreate,gmtModify})
+    <insert id="insert" parameterType="UserModel">
+        insert into user(account_id,name,token,gmt_create,gmt_modify,avatar_url) values(#{accountId},#{name},#{token},#{gmtCreate},#{gmtModify},#{avatarUrl})
     </insert>
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from user where account_id=#{accountId}
+    </delete>
+    <select id="select" resultMap="userMap">
+        select * from user where token=#{token}
+    </select>
+    <select id="selectByAccount" resultMap="userMap">
+        select * from user where account_id=#{accountId}
+    </select>
 </mapper>

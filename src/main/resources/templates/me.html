@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>码云社区</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/community.css">
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="js/bootstrap.js" type="application/javascript"></script>
+    <script type="text/javascript">
+        function showUpload(){
+          $("#upload").show();
+        }
+        function selectImg(){
+            $('#select').trigger("click");
+            $("#select").change(function(){
+        var objUrl = getObjectURL(this.files[0]);
+        if (objUrl) {
+           $("#display-img").attr("src", objUrl) ; //将图片路径存入src中，显示出图片
+         }
+         $("#upload").hide();
+         $("#submit").show();
+        });
+        }
+        function getObjectURL(file) {
+          var url = null ;
+          if (window.createObjectURL!=undefined) { // basic
+          url = window.createObjectURL(file) ;
+          } else if (window.URL!=undefined) { // mozilla(firefox)
+          url = window.URL.createObjectURL(file) ;
+          } else if (window.webkitURL!=undefined) { // webkit or chrome
+          url = window.webkitURL.createObjectURL(file) ;
+          }
+          return url ;
+        }
+        function toSubmit(){
+        $("#do-upload").trigger("click");
+        return false;
+        }
+    </script>
+</head>
+<body>
+<div class="main">
+    <div class="modal"  id="upload">
+        <div style="position: relative;
+  top:50%;
+  transform:translateY(-50%);
+  position: relative;
+  left:50%;
+  transform:translateX(-50%);
+  background-color: rgba(112,128,144);
+  width:300px;height:200px"  align="center">
+            <img src="/img/upload.jpg" style="width:100px;height:100px;margin-top:50px">
+            <h6 style="text-align:center;color:#0000FF;cursor: pointer" onclick="selectImg()">点击上传图片</h6>
+            <form action="/changHead" enctype="multipart/form-data" method="post" id="form">
+                <input type="file" id="select" name="headImg" style="display:none">
+                <input type="submit" id="do-upload" style="display:none">
+            </form>
+        </div>
+    </div>
+    <div class="modal"  id="submit">
+        <div style="position: relative;
+  top:50%;
+  transform:translateY(-50%);
+  position: relative;
+  left:50%;
+  transform:translateX(-50%);
+  background-color: rgba(112,128,144);
+  width:300px;height:200px"  align="center">
+            <img id="display-img" src="" style="width:100px;height:100px;margin-top:50px">
+            <form onsubmit="return toSubmit()">
+                <input type="file" id="uploadImg" style="display:none">
+                <button type="submit" style="margin-top:10px" class="btn btn-success">上传</button>
+            </form>
+        </div>
+    </div>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">码云社区</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="搜索...">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="#">java编程资料</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li th:if="${session.user!=null}"><a href="/publish">发表问题</a></li>
+                <li th:if="${session.user!=null}" class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="${session.user.name}"><span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">消息中心</a></li>
+                        <li><a href="#">退出登录</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+    <div class="container-fluid publish-content">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="media">
+                    <div class="media-left" style="width:200px;height:180px;margin:10px">
+                        <a href="#">
+                            <img class="media-object img-circle" th:src="${session.user.avatarUrl}" style="width:150px;height:150px;margin:10px">
+                        </a>
+                        <div style="text-align:center"><a href="#" onclick="showUpload()">修改头像</a></div>
+                    </div>
+                    <div class="media-body media-middle">
+                        <h4 class="media-heading" th:text="${session.user.name}"></h4>
+                    </div>
+                </div>
+                <hr>
+                <br>
+                <div th:each="question:${questions}">
+                    <div class="media">
+                        <div class="media-left" style="width:300px;height:100px">
+                            <a href="#">
+                                <img class="media-object" th:src="${question.userModel.avatarUrl}">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <a th:href="@{'/question?id='+${question.id}}"><h4 class="media-heading" th:text="${question.title}"></h4></a>
+                            <div style="font-size: 12px;font-weight: normal;color: #999;">
+                                <span th:text="${question.commentCount}"></span>个回复•
+                                <span th:text="${question.viewCount}"></span>次浏览•
+                                <span th:text="${#dates.format(question.gmtCreate, 'yyyy-MM-dd')}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>

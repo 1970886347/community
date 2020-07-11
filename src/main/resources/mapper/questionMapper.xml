@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzc.community.mapper.QuestionMapper">
+    <resultMap id="questionMap" type="Question" autoMapping="true">
+        <result column="id" property="id"/>
+     <association property="userModel" column="creator" select="com.hzc.community.mapper.UserMapper.selectByAccount"/>
+    </resultMap>
+    <resultMap id="singleQuestionMap" type="Question" autoMapping="true">
+        <result column="id" property="id"/>
+        <association property="userModel" column="creator" select="com.hzc.community.mapper.UserMapper.selectByAccount"/>
+        <collection property="tags" column="id"  ofType="Tag" select="com.hzc.community.mapper.TagMapper.selectByQuestionId"/>
+        <collection property="replies" ofType="Reply" column="id" select="com.hzc.community.mapper.ReplyMapper.selectByQuestionId"/>
+    </resultMap>
+    <select id="listQuestions" resultMap="questionMap">
+        select * from question
+        <where>
+            <if test="condition!=null">
+                gmt_create &gt;= #{condition}
+            </if>
+        </where>
+        <if test="filter!=null">
+            order by ${filter} desc
+        </if>
+        limit #{start},#{pageSize}
+    </select>
+    <select id="count" resultType="java.lang.Integer" >
+        select count(*) from question
+        <where>
+            <if test="condition!=null">
+                gmt_create &gt;= #{condition}
+            </if>
+        </where>
+    </select>
+    <select id="countNoReplyQuestion" resultType="java.lang.Integer">
+        select count(*) from question where comment_count=0
+    </select>
+    <select id="listNoReplyQuestion" resultMap="questionMap">
+        select * from question where comment_count=0 limit #{start},#{pageSize}
+    </select>
+    <select id="selectById" resultMap="singleQuestionMap">
+        select * from question where id=#{id}
+    </select>
+    <update id="update">
+        update question
+        <set>
+            <if test="viewCount!=null">
+                view_count=#{viewCount},
+            </if>
+            <if test="commentCount!=null">
+                comment_count=#{commentCount},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <select id="listByAccountId" resultMap="questionMap">
+        select * from question where creator=#{id}
+    </select>
+</mapper>

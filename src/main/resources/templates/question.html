@@ -53,53 +53,134 @@
 <div class="container-fluid publish-content">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-            <h3> <span class="glyphicon glyphicon-list" aria-hidden="true"></span>&nbsp;&nbsp;发现</h3>
-            <hr>
-            <ul class="nav nav-tabs">
-                <li role="presentation" th:class="${filter=='new'||filter==null}? 'active' : ''" ><a th:href="@{'/?filter=new'}">最新</a></li>
-                <li role="presentation" th:class="${filter=='hot30'}? 'active' : ''"><a th:href="@{'/?filter=hot30'}">30天最热</a></li>
-                <li role="presentation" th:class="${filter=='hot7'}? 'active' : ''"><a th:href="@{'/?filter=hot7'}">7天最热</a></li>
-                <li role="presentation" th:class="${filter=='hot'}? 'active' : ''"><a th:href="@{'/?filter=hot'}">最热</a></li>
-                <li role="presentation" th:class="${filter=='no'}? 'active' : ''"><a th:href="@{'/?filter=no'}" style="color:red !important">消灭零回复</a></li>
-            </ul>
             <br>
-            <div th:each="question:${questions}">
-                <div class="media">
-                    <div class="media-left">
-                        <a href="#">
-                            <img class="media-object" th:src="${question.userModel.avatarUrl}">
-                        </a>
-                    </div>
-                    <div class="media-body">
-                        <h4 class="media-heading" th:text="${question.title}"></h4>
-                        <div style="font-size: 12px;font-weight: normal;color: #999;">
-                            <span th:text="${question.commentCount}"></span>个回复•
-                            <span th:text="${question.viewCount}"></span>次浏览•
-                            <span th:text="${#dates.format(question.gmtCreate, 'yyyy-MM-dd')}"></span>
-                        </div>
+            <div class="media">
+                <div class="media-body">
+                    <h4 class="media-heading" th:text="${question.title}"></h4>
+                    <div style="font-size: 12px;font-weight: normal;color: #999;">
+                       作者:<span th:text="${question.userModel.name}"></span>|
+                       发布时间:<span th:text="${#dates.format(question.gmtCreate, 'yyyy-MM-dd')}"></span>|
+                       阅读数:<span th:text="${question.viewCount}"></span>
                     </div>
                 </div>
             </div>
-            <nav aria-label="...">
-                <ul class="pagination">
-                    <li  th:if="${currentIndex>4}"><a th:href="@{'/?page=1&filter='+${filter}}" aria-label="Previous"><span aria-hidden="true">&lt;&lt;</span></a></li>
-                    <li  th:if="${currentIndex>1}"><a th:href="@{'/?page='+${currentIndex-1}+'&filter='+${filter}}" aria-label="Previous"><span aria-hidden="true">&lt;</span></a></li>
-                    <li class="disable" th:if="${currentIndex>3}"><a th:href="@{'/?page='+${currentIndex-3}+'&filter='+${filter}}" th:text="${currentIndex-3}">1 <span class="sr-only">(current)</span></a></li>
-                    <li class="disable" th:if="${currentIndex>2}"><a th:href="@{'/?page='+${currentIndex-2}+'&filter='+${filter}}" th:text="${currentIndex-2}">1 <span class="sr-only">(current)</span></a></li>
-                    <li class="disable" th:if="${currentIndex>1}"><a th:href="@{'/?page='+${currentIndex-1}+'&filter='+${filter}}" th:text="${currentIndex-1}">1 <span class="sr-only">(current)</span></a></li>
-                    <li class="active"><a href="#" th:text="${currentIndex}"><span class="sr-only">(current)</span></a></li>
-                    <li class="disable" th:if="${currentIndex<maxPage}"><a th:href="@{'/?page='+${currentIndex+1}+'&filter='+${filter}}" th:text="${currentIndex+1}">1 <span class="sr-only">(current)</span></a></li>
-                    <li class="disable" th:if="${currentIndex<maxPage-1}"><a th:href="@{'/?page='+${currentIndex+2}+'&filter='+${filter}}" th:text="${currentIndex+2}">1 <span class="sr-only">(current)</span></a></li>
-                    <li class="disable" th:if="${currentIndex<maxPage-2}"><a th:href="@{'/?page='+${currentIndex+3}+'&filter='+${filter}}" th:text="${currentIndex+3}">1 <span class="sr-only">(current)</span></a></li>
-                    <li  th:if="${currentIndex<maxPage}"><a th:href="@{'/?page='+${currentIndex+1}+'&filter='+${filter}}" aria-label="Next"><span aria-hidden="true">&gt;</span></a></li>
-                    <li  th:if="${currentIndex<maxPage-3}"><a th:href="@{'/?page='+${maxPage}+'&filter='+${filter}}" aria-label="Next"><span aria-hidden="true">&gt;&gt;</span></a></li>
-                </ul>
-            </nav>
+            <hr>
+           <div style="weight:100%;height:400px" th:utext="${question.description}">
+
+           </div>
+            <hr>
+            <div style="weight:100%;height:30px">
+                <span class="question-tag" th:each="tag:${question.tags}">
+                    <a href="#" class="community-tag" th:text="${tag.content}"></a>
+                </span>
+            </div>
+            <hr>
+            <hr>
+            <h3><span th:text="${question.commentCount}"></span>个回复</h3>
+            <hr>
+            <div th:each="reply:${question.replies}">
+                <div class="media">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object" th:src="${reply.user.avatarUrl}">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h3 class="media-heading" th:text="${reply.user.name}"></h3>
+                        <div th:text="${reply.content}"></div>
+                        <div class="menu">
+                            <span class="glyphicon glyphicon-thumbs-up icon"></span>
+                            <span data-id="3163" onclick="collapse(this)" class="comment-icon hover-change" data-collapse="in">
+                                    <span class="glyphicon glyphicon-comment"></span>
+                                    <span th:text="${reply.subReplyNumbers}"></span>
+                                </span>
+                            <span class="pull-right" th:text="${#dates.format(question.gmtCreate, 'yyyy-MM-dd')}"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse sub-comments in" style="display:none" id="comment-3163">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comments" th:each="subReply:${reply.subReplyList}">
+                            <div class="media">
+                                <div class="media-left"><img class="media-object img-rounded" th:src="${subReply.user.avatarUrl}"></div>
+                                <div class="media-body"><h5 class="media-heading" th:text="${subReply.user.name}"></h5><div th:text="${subReply.content}"></div>
+                                    <div class="menu">
+                                    <span class="pull-right" th:text="${#dates.format(subReply.gmtCreate, 'yyyy-MM-dd')}"></span>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <form action="/subReply" method="post">
+                                <input type="hidden" name="replyId" th:value="${reply.id}">
+                                <input type="hidden" name="questionId" th:value="${question.id}">
+                                <input type="hidden" name="beReplied" th:value="${reply.user.accountId}">
+                                <input type="text" name="content" class="form-control" placeholder="评论一下……">
+                                <br>
+                                <button type="submit" class="btn btn-success pull-right" data-id="3163">评论
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <h3>提交回复</h3>
+            <hr>
+            <div class="media">
+                <div class="media-left media-middle">
+                    <a href="#">
+                        <img th:if="${session.user!=null}" class="media-object" th:src="${session.user.avatarUrl}">
+                        <img th:if="${session.user==null}" class="media-object" src="/img/default-avatar.png">
+                    </a>
+                </div>
+                <div class="media-body media-middle">
+                    <span th:if="${session.user!=null}" th:text="${session.user.name}"></span>
+                    <span th:if="${session.user==null}">匿名用户</span>
+                </div>
+                <br>
+                <form action="/reply" method="post">
+                    <input type="hidden" name="questionId" th:value="${session.id}">
+                    <input type="hidden" name="beReplied" th:value="${question.userModel.accountId}"/>
+                <div class="form-group">
+                    <textarea  class="form-control" name="content" style="height:150px"></textarea>.
+                </div>
+                    <div class="container-fluid publish-content">
+                        <div class="row">
+                            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                                <div class="alert alert-danger" role="alert" th:if="${errors!=null}" th:text="${errors}">...</div>
+                            </div>
+                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                                <button type="submit" class="btn btn btn-success" style="margin-bottom:30px;float:right">回复</button>
+                            </div>
+                        </div>
+                    </div>
+            </form>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
 
         </div>
     </div>
 </div>
+</div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+var error = /*[[${error}]]*/;
+if(error!=null){
+alert(error);
+}
+/*]]>*/
+</script>
+<script type="text/javascript">
+    function collapse(element){
+    var target=element.parentNode.parentNode.nextSibling.nextSibling;
+    if(target.style.display=="none"){
+    target.style.display="block";
+    element.classList.add("active");
+    }else{
+    target.style.display="none";
+    element.classList.remove("active");
+    }
+    }
+
+</script>
 </body>
 </html>

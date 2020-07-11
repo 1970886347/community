@@ -1,4 +1,4 @@
-package com.hzc.community;
+package com.hzc.community.service;
 
 import com.hzc.community.mapper.QuestionMapper;
 import com.hzc.community.model.Question;

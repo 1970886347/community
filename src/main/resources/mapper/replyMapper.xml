@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzc.community.mapper.ReplyMapper">
+    <resultMap id="replyMap" type="Reply" autoMapping="true">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <association property="user" column="user_id" select="com.hzc.community.mapper.UserMapper.selectByAccount"/>
+        <association property="subReplyNumbers" column="id" select="com.hzc.community.mapper.SubReplyMapper.countByReplyId"/>
+        <collection property="subReplyList" column="id" ofType="SubReply" select="com.hzc.community.mapper.SubReplyMapper.listSubReplyByReplyId"/>
+    </resultMap>
+    <resultMap id="messageReplyMap" type="Reply" autoMapping="true">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <association property="user" column="user_id" select="com.hzc.community.mapper.UserMapper.selectByAccount"/>
+    </resultMap>
+    <resultMap id="detailMessageMap" type="Reply" autoMapping="true" extends="messageReplyMap">
+        <association property="question" column="question_Id" select="com.hzc.community.mapper.QuestionMapper.selectById"/>
+    </resultMap>
+    <select id="selectByQuestionId" resultMap="replyMap">
+        select * from reply where question_id=#{questionId}
+    </select>
+    <select id="listByReplied" resultMap="messageReplyMap">
+        select * from reply where be_replied=#{accountId} and user_id&lt;&gt;#{accountId} and status=0
+    </select>
+    <select id="selectById" resultMap="detailMessageMap">
+        select * from reply where id=#{id}
+    </select>
+</mapper>

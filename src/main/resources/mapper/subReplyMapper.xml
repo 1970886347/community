@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzc.community.mapper.SubReplyMapper">
+    <resultMap id="subReplyMap" type="SubReply">
+        <association property="user" column="user_id" select="com.hzc.community.mapper.UserMapper.selectByAccount"/>
+    </resultMap>
+    <resultMap id="detailSubReplyMap" type="SubReply" autoMapping="true" extends="subReplyMap">
+        <association property="reply" column="reply_id" select="com.hzc.community.mapper.ReplyMapper.selectById"/>
+    </resultMap>
+    <select id="listSubReplyByReplyId" resultMap="subReplyMap">
+       select * from sub_reply where reply_id=#{replyId}
+    </select>
+    <select id="listByReplied" resultMap="subReplyMap">
+        select * from sub_reply where be_replied=#{accountId} and user_id&lt;&gt;#{accountId} and status=0
+    </select>
+    <select id="selectById" resultMap="detailSubReplyMap">
+        select * from sub_reply where id=#{id}
+    </select>
+</mapper>

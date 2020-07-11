@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzc.community.mapper.TagMapper">
+    <insert id="insertTags" parameterType="java.util.List" useGeneratedKeys="false">
+        insert into tag(question_id,content) values
+        <foreach collection="list" item="tag" index="index" separator=",">
+            (
+            #{tag.questionId},
+            #{tag.content}
+            )
+        </foreach>
+    </insert>
+    <select id="selectByQuestionId" parameterType="java.lang.Integer" resultType="Tag">
+        select * from tag where question_id=#{questionId}
+    </select>
+</mapper>
