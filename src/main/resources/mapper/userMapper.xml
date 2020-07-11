@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzc.community.mapper.userMapper">
+    <resultMap id="userMap" type="user">
+        <id column="id" property="id"/>
+        <result column="account_id" property="accountId"/>
+        <result column="name" property="name"/>
+        <result column="token" property="token"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modify" property="gmtModify"/>
+    </resultMap>
+    <insert id="insert" parameterType="user">
+        insert into user(account_id,name,token,gmt_create,gmt_modify) values(#{accountId,name,token,gmtCreate,gmtModify})
+    </insert>
+</mapper>
