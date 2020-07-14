@@ -36,17 +36,17 @@ public class GithubProvider {
         Request request = new Request.Builder()
                     .url("https://api.github.com/user?access_token="+token)
                     .build();
-
         Response response = null;
         try {
             response = client.newCall(request).execute();
             String result=response.body().string();
             User user=JSON.parseObject(result,User.class);
+            response.close();
             return user;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (!response.isSuccessful()){
+        if (response==null||!response.isSuccessful()){
 
         }
         return null;

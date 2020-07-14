@@ -29,6 +29,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
@@ -52,7 +53,7 @@ public class LuceneProvider {
     public void addScore(Question question){
         String path=null;
         try {
-            String root= ResourceUtils.getURL("classpath:").getPath()+"static";
+            String root=ResourceUtils.getURL("classpath:").getPath()+"static";
             path=root+"/lucene/";
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -105,7 +106,7 @@ public class LuceneProvider {
     public List<Question> getScores(String key){
         String path=null;
         try {
-            String root= ResourceUtils.getURL("classpath:").getPath()+"static";
+            String root=ResourceUtils.getURL("classpath:").getPath()+"static";
             path=root+"/lucene/";
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -128,7 +129,7 @@ public class LuceneProvider {
             e.printStackTrace();
         }
         IndexSearcher indexSearcher=new IndexSearcher(indexReader);
-        MultiFieldQueryParser queryParser=new MultiFieldQueryParser(new String[]{"title","description","tag"},new SmartChineseAnalyzer());
+        MultiFieldQueryParser queryParser=new MultiFieldQueryParser(new String[]{"title","description","tags"},new SmartChineseAnalyzer());
         Query query=null;
         try {
             query=queryParser.parse(key);

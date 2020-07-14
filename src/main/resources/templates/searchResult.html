@@ -8,6 +8,18 @@
     <link rel="stylesheet" href="css/community.css">
     <script src="/js/jquery-3.4.1.min.js"></script>
     <script src="js/bootstrap.js" type="application/javascript"></script>
+    <script type="text/javascript">
+        function expandContent(){
+          $("#expand").hide();
+          $("#content").show();
+          $("#disExpand").show();
+        }
+        function disExpandContent(){
+          $("#expand").show();
+          $("#content").hide();
+          $("#disExpand").hide();
+        }
+    </script>
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -37,6 +49,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li th:if="${session.user==null}"><a href="https://github.com/login/oauth/authorize?client_id=9e6181345b7f5e373266&redirect_uri=http://localhost:8080/callback&scope=user&state=1">登录</a></li>
+                <li th:if="${session.user!=null}"><a href="/publish">发表问题</a></li>
                 <li th:if="${session.user!=null}"><a href="/publish">发表问题</a></li>
                 <li th:if="${session.user!=null}"><a href="/message">通知<span class="badge" th:text="${session.messageCount}"></span></a></li>
                 <li th:if="${session.user!=null}" class="dropdown">
@@ -69,6 +82,13 @@
                 <span class="question-tag" th:each="tag:${question.tagArrays}">
                     <a href="#" class="community-tag" th:utext="${tag}"></a>
                 </span>
+                        </div>
+                        <div onclick="expandContent()" id="expand" style="cursor: pointer;color:#4B0082">
+                            展开内容...
+                        </div>
+                        <div id="content" th:utext="${question.description}" style="display:none"></div>
+                        <div onclick="disExpandContent()" id="disExpand" style="cursor: pointer;color:#4B0082;display:none">
+                            收起内容...
                         </div>
                         <div style="font-size: 12px;font-weight: normal;color: #999;">
                             <span th:text="${question.commentCount}"></span>个回复•
